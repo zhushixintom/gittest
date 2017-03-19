@@ -97,10 +97,47 @@
 				if (window.WebKitCSSMatrix)
 					curTransform = transformMatrix.m41;
 				//Crazy IE10 Matrix
+				else if (matrix.length === 16)
+					curTransform = parseFloat(matrix[12]);
+				//Normal Browsers
+				else
+					curTransform = parseFloat(matrix[4]);
 			}
+			if (axis === 'y') {
+				//Latest Chrome and webkits Fix
+				if (window.WebKitCSSMatrix)
+					curTransform = transformMatrix.M42;
+				//Crazy IE10 Matrix
+				else if (matrix.length === 16)
+					curTransform = parseFloat(matrix[13]);
+				//Normal Browsers
+				else
+					curTransform = parseFloat(matrix[5]);
+			}
+
+			return curTransform || 0;
+		};
+		$.requestAnimationFrame = function(callback) {
+			if (window.requestAnimationFrame) return window.requestAnimationFrame(callback);
+	    else if (window.webkitRequestAnimationFrame) return window.webkitRequestAnimationFrame(callback);
+   	  else if (window.mozRequestAnimationFrame) return window.mozRequestAnimationFrame(callback);
+    	else {
+    		return window.setTimeout(callback, 1000 / 60);
 		}
+		};
+
+		$.cancelAnimationFrame = function (id) {
+    if (window.cancelAnimationFrame) return window.cancelAnimationFrame(id);
+    else if (window.webkitCancelAnimationFrame) return window.webkitCancelAnimationFrame(id);
+    else if (window.mozCancelAnimationFrame) return window.mozCancelAnimationFrame(id);
+    else {
+      return window.clearTimeout(id);
+    }
+  };
+
+  $.fn.join = function(arg) {
+  	return this.toArray().join(arg);
+  }
 
 
-	}
-
-})
+})($);
